@@ -1,0 +1,155 @@
+#![cfg(test)]
+
+use crate::{
+    data_model::{Ability, Action, Card, Character},
+    hex_grid::Pos,
+    play::play_card_unchecked,
+    precondition::precondition_is_met,
+    resolve_action::{
+        ActionInputMovement, ActionInputOnSelf, ActionInputTargeted, resolve_action_movement,
+        resolve_action_on_self, resolve_action_targeted,
+    },
+};
+
+#[derive(Default)]
+pub struct Inputs {
+    pub input_movement: Vec<ActionInputMovement>,
+    pub input_targeted: Vec<ActionInputTargeted>,
+}
+
+#[derive(Debug, Clone)]
+pub enum ActionInput {
+    OnSelf(ActionInputOnSelf),
+    Targeted(ActionInputTargeted),
+    Movement(ActionInputMovement),
+}
+
+pub fn single_targeted_input(target: Pos) -> Vec<ActionInput> {
+    vec![ActionInput::Targeted(ActionInputTargeted { target })]
+}
+
+pub fn single_movement_input(path: Vec<Pos>) -> Vec<ActionInput> {
+    vec![ActionInput::Movement(ActionInputMovement { path })]
+}
+
+#[derive(Debug)]
+pub enum TestSetupError {
+    TryingToResolveActionWithoutInput {
+        action: Action,
+    },
+    TryingToResolveActionWithWrongInputType {
+        action: Action,
+        input: ActionInput,
+    },
+    PlayedCardWithRemainingAbilities {
+        card: Card,
+        remaining_abilities: Vec<Ability>,
+    },
+}
+
+pub fn resolve_remaining_abilities<'a, 'b, C, I>(
+    character: &mut Character,
+    characters: &'a mut C,
+    inputs: I,
+) -> Result<(), TestSetupError>
+where
+    for<'c> &'c C: IntoIterator<Item = &'c Character>,
+    for<'c> &'c mut C: IntoIterator<Item = &'c mut Character>,
+    I: Iterator<Item = &'b ActionInput>,
+{
+    resolve_abilities(character, characters, inputs, usize::MAX)
+}
+
+pub fn resolve_abilities<'a, 'b, C, I>(
+    character: &mut Character,
+    characters: &'a mut C,
+    inputs: I,
+    ability_limit: usize,
+) -> Result<(), TestSetupError>
+where
+    for<'c> &'c C: IntoIterator<Item = &'c Character>,
+    for<'c> &'c mut C: IntoIterator<Item = &'c mut Character>,
+    I: Iterator<Item = &'b ActionInput>,
+{
+    let mut inputs = inputs;
+    let mut count = 0;
+    while let Some(ability) = character.remaining_abilities.pop() {
+        if count >= ability_limit {
+            return Ok(());
+        }
+        count += 1;
+        if ability
+            .precondition
+            .is_none_or(|precondition| precondition_is_met(&precondition, &*characters, character))
+        {
+            for action in ability.actions {
+                let action_clone = action.clone();
+                match action {
+                    Action::OnSelf(action) => {
+                        resolve_action_on_self(action, character, characters);
+                    }
+                    Action::Targeted(action) => {
+                        let input = match inputs.next() {
+                            Some(ActionInput::Targeted(input)) => input,
+                            Some(input) => {
+                                return Err(
+                                    TestSetupError::TryingToResolveActionWithWrongInputType {
+                                        action: action_clone,
+                                        input: input.clone(),
+                                    },
+                                );
+                            }
+                            None => {
+                                return Err(TestSetupError::TryingToResolveActionWithoutInput {
+                                    action: action_clone,
+                                });
+                            }
+                        };
+                        resolve_action_targeted(action, input, character, characters);
+                    }
+                    Action::Movement(action) => {
+                        let input = match inputs.next() {
+                            Some(ActionInput::Movement(input)) => input,
+                            Some(input) => {
+                                return Err(
+                                    TestSetupError::TryingToResolveActionWithWrongInputType {
+                                        action: action_clone,
+                                        input: input.clone(),
+                                    },
+                                );
+                            }
+                            None => {
+                                return Err(TestSetupError::TryingToResolveActionWithoutInput {
+                                    action: action_clone,
+                                });
+                            }
+                        };
+                        resolve_action_movement(action, input, character);
+                    }
+                }
+            }
+        }
+    }
+    Ok(())
+}
+
+pub fn play_card_with_inputs<'a, 'b, C, I>(
+    card: Card,
+    character: &mut Character,
+    characters: &'a mut C,
+    inputs: I,
+) -> Result<(), TestSetupError>
+where
+    for<'c> &'c C: IntoIterator<Item = &'c Character>,
+    for<'c> &'c mut C: IntoIterator<Item = &'c mut Character>,
+    I: Iterator<Item = &'b ActionInput>,
+{
+    if !character.remaining_abilities.is_empty() {
+        return Err(TestSetupError::PlayedCardWithRemainingAbilities {
+            card,
+            remaining_abilities: character.remaining_abilities.clone(),
+        });
+    }
+    let abilities_to_resolve = play_card_unchecked(character, card.data());
+    resolve_abilities(character, characters, inputs, abilities_to_resolve)
+}

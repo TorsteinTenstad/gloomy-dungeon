@@ -1,0 +1,188 @@
+use crate::{
+    character_filter::CharacterFilter,
+    data_model::{
+        Ability, Action, ActionOnSelf, ActionTargeted, AreaEffect, Comparison, Condition,
+        ConditionEffect, EffectOnCharacter, Item, ItemData, ModifyGainedConditions, Passives,
+        Reach, RoundStat, TriggeredAbilities,
+    },
+    precondition::Precondition,
+};
+
+impl Item {
+    pub fn data(self) -> ItemData {
+        match self {
+            Self::ShroudOfThePoisonFeeder => ItemData {
+                description: "Applied Poison is converted to Regen. Applied Regen is converted to Poison.".into(),
+                passives: Passives {
+                    modify_gained_conditions: vec![
+                        ModifyGainedConditions {
+                            applies_only_to: Some(Condition::Poison),
+                            transform_into: Some(Condition::Regen),
+                            additive_factor: 0,
+                            multiplicative_factor: 1.0,
+                        },
+                        ModifyGainedConditions {
+                            applies_only_to: Some(Condition::Regen),
+                            transform_into: Some(Condition::Poison),
+                            additive_factor: 0,
+                            multiplicative_factor: 1.0,
+                        },
+                    ],
+                    ..Default::default()
+                },
+                triggered_abilities: Default::default(),
+            },
+            Self::CloakOfInvisibility => ItemData {
+                description: "At the end of your turn, if you are not adjacent to an enemy, gain Invisible(1). After every attack action, gain Fragile(1).".into(),
+                passives: Default::default(),
+                triggered_abilities: TriggeredAbilities {
+                    end_of_turn: vec![Ability {
+                        precondition: Some(Precondition::FilteredCount {
+                            filter: CharacterFilter::And(vec![
+                                CharacterFilter::IsSelf,
+                                CharacterFilter::NoAdjacentEnemies,
+                            ]),
+                            comparison: Comparison::Equal,
+                            value: 0,
+                        }),
+                        actions: vec![Action::OnSelf(ActionOnSelf {
+                            effects: vec![AreaEffect {
+                                effects: vec![EffectOnCharacter::Condition(ConditionEffect {
+                                    condition_type: Condition::Invisible,
+                                    value: 1,
+                                })],
+                                ..Default::default()
+                            }],
+                        })],
+                    }],
+                    attack_action: vec![Ability {
+                        precondition: None,
+                        actions: vec![Action::OnSelf(ActionOnSelf {
+                            effects: vec![AreaEffect {
+                                effects: vec![EffectOnCharacter::Condition(ConditionEffect {
+                                    condition_type: Condition::Fragile,
+                                    value: 1,
+                                })],
+                                ..Default::default()
+                            }],
+                        })],
+                    }],
+                    ..Default::default()
+                },
+            },
+            Self::ChestplateOfTheEnraged => ItemData {
+                description: "Every time damage is taken, gain Strong(1).".into(),
+                passives: Default::default(),
+                triggered_abilities: TriggeredAbilities {
+                    damage_taken: vec![Ability {
+                        precondition: None,
+                        actions: vec![Action::OnSelf(ActionOnSelf {
+                            effects: vec![AreaEffect {
+                                effects: vec![EffectOnCharacter::Condition(ConditionEffect {
+                                    condition_type: Condition::Strong,
+                                    value: 1,
+                                })],
+                                ..Default::default()
+                            }],
+                        })],
+                    }],
+                    ..Default::default()
+                },
+            },
+            Self::StillrootPlate => ItemData {
+                description: "At the start of you turn, if you didn't move last turn, gain one Stamina.".into(),
+                passives: Default::default(),
+                triggered_abilities: TriggeredAbilities {
+                    damage_taken: vec![Ability {
+                        precondition: Some(Precondition::RoundStat {
+                            round_index_relative: 1,
+                            stat: RoundStat::SpacesMoved,
+                            comparison: Comparison::Equal,
+                            value: 0,
+                        }),
+                        actions: vec![Action::OnSelf(ActionOnSelf {
+                            effects: vec![AreaEffect {
+                                effects: vec![EffectOnCharacter::GainStamina(1)],
+                                ..Default::default()
+                            }],
+                        })],
+                    }],
+                    ..Default::default()
+                },
+            },
+            Self::MonksRobe => ItemData {
+                description: "After every movement action, you may gain Disarmed(1) to apply Stunned(1) to an adjacent enemy.".into(),
+                passives: Default::default(),
+                triggered_abilities: TriggeredAbilities {
+                    movement_action: vec![
+                        Ability {
+                            precondition: None,
+                            actions: vec![
+                                Action::OnSelf(ActionOnSelf {
+                                    effects: vec![AreaEffect {
+                                        effects: vec![EffectOnCharacter::Condition(
+                                            ConditionEffect {
+                                                condition_type: Condition::Disarmed,
+                                                value: 1,
+                                            },
+                                        )],
+                                        ..Default::default()
+                                    }],
+                                }),
+                                Action::Targeted(ActionTargeted {
+                                    reach: Reach::Melee,
+                                    effects: vec![AreaEffect {
+                                        effects: vec![EffectOnCharacter::Condition(
+                                            ConditionEffect {
+                                                condition_type: Condition::Stunned,
+                                                value: 1,
+                                            },
+                                        )],
+                                        ..Default::default()
+                                    }],
+                                }),
+                            ],
+                        },
+                        Ability {
+                            precondition: None,
+                            actions: vec![],
+                        },
+                    ],
+                    ..Default::default()
+                },
+            },
+            Self::ThorngrownVest => ItemData {
+                description: "At the end of your turn, if you didn't attack, gain Retaliate(2).".into(),
+                passives: Default::default(),
+                triggered_abilities: TriggeredAbilities {
+                    damage_taken: vec![Ability {
+                        precondition: Some(Precondition::RoundStat {
+                            round_index_relative: 0,
+                            stat: RoundStat::AttackActions,
+                            comparison: Comparison::Equal,
+                            value: 0,
+                        }),
+                        actions: vec![Action::OnSelf(ActionOnSelf {
+                            effects: vec![AreaEffect {
+                                effects: vec![EffectOnCharacter::Condition(ConditionEffect {
+                                    condition_type: Condition::Retaliate,
+                                    value: 2,
+                                })],
+                                ..Default::default()
+                            }],
+                        })],
+                    }],
+                    ..Default::default()
+                },
+            },
+            Self::BoodboundHarness => ItemData {
+                description: "Your actions consume Health instead of Stamina.".into(),
+                passives: Passives {
+                    actions_consume_health_instead_of_mana: true,
+                    ..Default::default()
+                },
+                triggered_abilities: Default::default(),
+            },
+        }
+    }
+}

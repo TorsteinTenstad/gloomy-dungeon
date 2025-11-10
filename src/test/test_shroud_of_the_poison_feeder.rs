@@ -1,0 +1,30 @@
+#![cfg(test)]
+use crate::{
+    apply_area_effects::apply_condition_effect,
+    data_model::{Card, Character, Condition, ConditionEffect, Item},
+    hex_grid::Pos,
+    test::tools::{play_card_with_inputs, single_targeted_input},
+};
+
+#[test]
+pub fn test_shroud_of_the_poison_feeder() {
+    let character = &mut Character {
+        stamina_current: 10,
+        health_current: 1,
+        health_max: 10,
+        equipped_items: vec![Item::ShroudOfThePoisonFeeder],
+        ..Default::default()
+    };
+    play_card_with_inputs(
+        Card::PoisonCloud,
+        character,
+        &mut vec![],
+        single_targeted_input(Pos::default()).iter(),
+    )
+    .unwrap();
+
+    // Test fails because the condition is transformed both ways within the same effect resolution.
+    // Needs design work to define show this should work.
+    assert_eq!(character.conditions.get(&Condition::Poison), 0);
+    assert_eq!(character.conditions.get(&Condition::Regen), 3);
+}
