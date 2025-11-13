@@ -8,10 +8,10 @@ use crate::{
     hex_grid::{Pos, pos_in_area},
 };
 
-pub fn apply_area_effects<'a, 'b, C, E>(
+pub fn apply_area_effects<'b, C, E>(
     effects: E,
     target: &Pos,
-    characters: &'a mut C,
+    characters: &mut C,
     source_character: &mut Character,
 ) where
     for<'c> &'c mut C: IntoIterator<Item = &'c mut Character>,

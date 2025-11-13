@@ -19,7 +19,7 @@ pub struct ActionInputMovement {
 }
 
 pub fn resolve_action_movement(
-    action: ActionMovement,
+    action: &ActionMovement,
     input: &ActionInputMovement,
     character: &mut Character,
 ) {
@@ -27,21 +27,21 @@ pub fn resolve_action_movement(
     perform_movement_unchecked(character, input.path.iter());
 }
 
-pub fn resolve_action_targeted<'a, C>(
-    action: ActionTargeted,
+pub fn resolve_action_targeted<C>(
+    action: &ActionTargeted,
     input: &ActionInputTargeted,
     character: &mut Character,
-    characters: &'a mut C,
+    characters: &mut C,
 ) where
     for<'c> &'c mut C: IntoIterator<Item = &'c mut Character>,
 {
     apply_area_effects(action.effects.iter(), &input.target, characters, character);
 }
 
-pub fn resolve_action_on_self<'a, C>(
-    action: ActionOnSelf,
+pub fn resolve_action_on_self<C>(
+    action: &ActionOnSelf,
     character: &mut Character,
-    characters: &'a mut C,
+    characters: &mut C,
 ) where
     for<'c> &'c mut C: IntoIterator<Item = &'c mut Character>,
 {

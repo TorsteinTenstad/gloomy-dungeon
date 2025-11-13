@@ -47,29 +47,29 @@ pub enum TestSetupError {
     },
 }
 
-pub fn resolve_remaining_abilities<'a, 'b, C, I>(
+pub fn resolve_remaining_abilities<'a, C, I>(
     character: &mut Character,
-    characters: &'a mut C,
+    characters: &mut C,
     inputs: I,
 ) -> Result<(), TestSetupError>
 where
-    for<'c> &'c C: IntoIterator<Item = &'c Character>,
-    for<'c> &'c mut C: IntoIterator<Item = &'c mut Character>,
-    I: Iterator<Item = &'b ActionInput>,
+    for<'b> &'b C: IntoIterator<Item = &'b Character>,
+    for<'b> &'b mut C: IntoIterator<Item = &'b mut Character>,
+    I: Iterator<Item = &'a ActionInput>,
 {
     resolve_abilities(character, characters, inputs, usize::MAX)
 }
 
-pub fn resolve_abilities<'a, 'b, C, I>(
+pub fn resolve_abilities<'a, C, I>(
     character: &mut Character,
-    characters: &'a mut C,
+    characters: &mut C,
     inputs: I,
     ability_limit: usize,
 ) -> Result<(), TestSetupError>
 where
-    for<'c> &'c C: IntoIterator<Item = &'c Character>,
-    for<'c> &'c mut C: IntoIterator<Item = &'c mut Character>,
-    I: Iterator<Item = &'b ActionInput>,
+    for<'b> &'b C: IntoIterator<Item = &'b Character>,
+    for<'b> &'b mut C: IntoIterator<Item = &'b mut Character>,
+    I: Iterator<Item = &'a ActionInput>,
 {
     let mut inputs = inputs;
     let mut count = 0;
@@ -86,7 +86,7 @@ where
                 let action_clone = action.clone();
                 match action {
                     Action::OnSelf(action) => {
-                        resolve_action_on_self(action, character, characters);
+                        resolve_action_on_self(&action, character, characters);
                     }
                     Action::Targeted(action) => {
                         let input = match inputs.next() {
@@ -105,7 +105,7 @@ where
                                 });
                             }
                         };
-                        resolve_action_targeted(action, input, character, characters);
+                        resolve_action_targeted(&action, input, character, characters);
                     }
                     Action::Movement(action) => {
                         let input = match inputs.next() {
@@ -124,7 +124,7 @@ where
                                 });
                             }
                         };
-                        resolve_action_movement(action, input, character);
+                        resolve_action_movement(&action, input, character);
                     }
                 }
             }
@@ -133,16 +133,16 @@ where
     Ok(())
 }
 
-pub fn play_card_with_inputs<'a, 'b, C, I>(
+pub fn play_card_with_inputs<'a, C, I>(
     card: Card,
     character: &mut Character,
-    characters: &'a mut C,
+    characters: &mut C,
     inputs: I,
 ) -> Result<(), TestSetupError>
 where
-    for<'c> &'c C: IntoIterator<Item = &'c Character>,
-    for<'c> &'c mut C: IntoIterator<Item = &'c mut Character>,
-    I: Iterator<Item = &'b ActionInput>,
+    for<'b> &'b C: IntoIterator<Item = &'b Character>,
+    for<'b> &'b mut C: IntoIterator<Item = &'b mut Character>,
+    I: Iterator<Item = &'a ActionInput>,
 {
     if !character.remaining_abilities.is_empty() {
         return Err(TestSetupError::PlayedCardWithRemainingAbilities {
