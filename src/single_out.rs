@@ -3,10 +3,7 @@ pub struct DiscontinuousSpan<'a, T> {
     after: &'a mut [T],
 }
 
-pub fn single_out<'a, T>(
-    v: &'a mut [T],
-    index: usize,
-) -> Option<(&'a mut T, DiscontinuousSpan<'a, T>)> {
+pub fn single_out<T>(v: &mut [T], index: usize) -> Option<(&mut T, DiscontinuousSpan<'_, T>)> {
     let (before, rest) = v.split_at_mut_checked(index)?;
     let (single, after) = rest.split_first_mut()?;
     Some((single, DiscontinuousSpan { before, after }))

@@ -5,18 +5,11 @@ use crate::{
     hex_grid::Pos,
     play::play_card_unchecked,
     pop_ability::{PopAbilityResult, pop_ability},
-    precondition::precondition_is_met,
     resolve_action::{
         ActionInputMovement, ActionInputOnSelf, ActionInputTargeted, resolve_action_movement,
         resolve_action_on_self, resolve_action_targeted,
     },
 };
-
-#[derive(Default)]
-pub struct Inputs {
-    pub input_movement: Vec<ActionInputMovement>,
-    pub input_targeted: Vec<ActionInputTargeted>,
-}
 
 #[derive(Debug, Clone)]
 pub enum ActionInput {
@@ -33,6 +26,8 @@ pub fn single_movement_input(path: Vec<Pos>) -> Vec<ActionInput> {
     vec![ActionInput::Movement(ActionInputMovement { path })]
 }
 
+// To override "has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis"
+#[allow(dead_code)]
 #[derive(Debug)]
 pub enum TestSetupError {
     TryingToResolveActionWithoutInput {

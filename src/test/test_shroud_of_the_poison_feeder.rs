@@ -1,7 +1,6 @@
 #![cfg(test)]
 use crate::{
-    apply_area_effects::apply_condition_effect,
-    data_model::{Card, Character, Condition, ConditionEffect, Item},
+    data_model::{Card, Character, Condition, Item},
     hex_grid::Pos,
     test::tools::{play_card_with_inputs, single_targeted_input},
 };
