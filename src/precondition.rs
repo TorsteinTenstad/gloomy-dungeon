@@ -18,6 +18,17 @@ pub enum Precondition {
     },
 }
 
+pub fn optional_precondition_is_met<'a, C>(
+    precondition: Option<&Precondition>,
+    characters: C,
+    source_character: &Character,
+) -> bool
+where
+    C: IntoIterator<Item = &'a Character>,
+{
+    precondition
+        .is_none_or(|precondition| precondition_is_met(precondition, characters, source_character))
+}
 pub fn precondition_is_met<'a, C>(
     precondition: &Precondition,
     characters: C,

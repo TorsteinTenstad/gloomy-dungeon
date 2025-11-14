@@ -4,6 +4,7 @@ use crate::{
     data_model::{Ability, Action, Card, Character},
     hex_grid::Pos,
     play::play_card_unchecked,
+    pop_ability::{PopAbilityResult, pop_ability},
     precondition::precondition_is_met,
     resolve_action::{
         ActionInputMovement, ActionInputOnSelf, ActionInputTargeted, resolve_action_movement,
@@ -73,58 +74,62 @@ where
 {
     let mut inputs = inputs;
     let mut count = 0;
-    while let Some(ability) = character.remaining_abilities.pop() {
-        if count >= ability_limit {
-            return Ok(());
-        }
+    while count < ability_limit {
         count += 1;
-        if ability
-            .precondition
-            .is_none_or(|precondition| precondition_is_met(&precondition, &*characters, character))
-        {
-            for action in ability.actions {
-                let action_clone = action.clone();
-                match action {
-                    Action::OnSelf(action) => {
-                        resolve_action_on_self(&action, character, characters);
-                    }
-                    Action::Targeted(action) => {
-                        let input = match inputs.next() {
-                            Some(ActionInput::Targeted(input)) => input,
-                            Some(input) => {
-                                return Err(
-                                    TestSetupError::TryingToResolveActionWithWrongInputType {
-                                        action: action_clone,
-                                        input: input.clone(),
-                                    },
-                                );
-                            }
-                            None => {
-                                return Err(TestSetupError::TryingToResolveActionWithoutInput {
-                                    action: action_clone,
-                                });
-                            }
-                        };
-                        resolve_action_targeted(&action, input, character, characters);
-                    }
-                    Action::Movement(action) => {
-                        let input = match inputs.next() {
-                            Some(ActionInput::Movement(input)) => input,
-                            Some(input) => {
-                                return Err(
-                                    TestSetupError::TryingToResolveActionWithWrongInputType {
-                                        action: action_clone,
-                                        input: input.clone(),
-                                    },
-                                );
-                            }
-                            None => {
-                                return Err(TestSetupError::TryingToResolveActionWithoutInput {
-                                    action: action_clone,
-                                });
-                            }
-                        };
-                        resolve_action_movement(&action, input, character);
+        match pop_ability(character, &(*characters)) {
+            PopAbilityResult::NoRemainingAbilities => {
+                break;
+            }
+            PopAbilityResult::NextAbilityDoesNotSatisfyPrecondition => {}
+            PopAbilityResult::Actions { actions } => {
+                for action in actions {
+                    let action_clone = action.clone();
+                    match action {
+                        Action::OnSelf(action) => {
+                            resolve_action_on_self(&action, character, characters);
+                        }
+                        Action::Targeted(action) => {
+                            let input = match inputs.next() {
+                                Some(ActionInput::Targeted(input)) => input,
+                                Some(input) => {
+                                    return Err(
+                                        TestSetupError::TryingToResolveActionWithWrongInputType {
+                                            action: action_clone,
+                                            input: input.clone(),
+                                        },
+                                    );
+                                }
+                                None => {
+                                    return Err(
+                                        TestSetupError::TryingToResolveActionWithoutInput {
+                                            action: action_clone,
+                                        },
+                                    );
+                                }
+                            };
+                            resolve_action_targeted(&action, input, character, characters);
+                        }
+                        Action::Movement(action) => {
+                            let input = match inputs.next() {
+                                Some(ActionInput::Movement(input)) => input,
+                                Some(input) => {
+                                    return Err(
+                                        TestSetupError::TryingToResolveActionWithWrongInputType {
+                                            action: action_clone,
+                                            input: input.clone(),
+                                        },
+                                    );
+                                }
+                                None => {
+                                    return Err(
+                                        TestSetupError::TryingToResolveActionWithoutInput {
+                                            action: action_clone,
+                                        },
+                                    );
+                                }
+                            };
+                            resolve_action_movement(&action, input, character);
+                        }
                     }
                 }
             }
