@@ -3,7 +3,7 @@
 use crate::{
     data_model::{Ability, Action, Card, Character},
     hex_grid::Pos,
-    play::play_card_unchecked,
+    play::{begin_turn, end_turn, play_card_unchecked},
     pop_ability::{PopAbilityResult, pop_ability},
     resolve_action::{
         ActionInputMovement, ActionInputOnSelf, ActionInputTargeted, resolve_action_movement,
@@ -152,4 +152,9 @@ where
     }
     let abilities_to_resolve = play_card_unchecked(character, card.data());
     resolve_abilities(character, characters, inputs, abilities_to_resolve)
+}
+
+pub fn end_and_begin_turn(character: &mut Character){
+    end_turn(character);
+    begin_turn(character);
 }

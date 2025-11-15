@@ -92,7 +92,7 @@ pub fn apply_effect_to_character(
         }
         EffectOnCharacter::GainStamina(stamina) => {
             character.stamina_current =
-                usize::max(character.stamina_current + stamina, character.stamina_max);
+                usize::min(character.stamina_current + stamina, character.stamina_max);
         }
     }
 }
@@ -121,7 +121,7 @@ pub fn apply_effect_to_character_with_same_source_character(
         }
         EffectOnCharacter::GainStamina(stamina) => {
             character.stamina_current =
-                usize::max(character.stamina_current + stamina, character.stamina_max);
+                usize::min(character.stamina_current + stamina, character.stamina_max);
         }
     }
 }
@@ -153,7 +153,7 @@ pub fn deal_damage(net_damage: usize, character: &mut Character) {
 }
 
 pub fn restore_health(health: usize, character: &mut Character) {
-    character.health_current = usize::max(character.health_current + health, character.health_max);
+    character.health_current = usize::min(character.health_current + health, character.health_max);
 }
 
 pub fn push_triggered_abilities<F>(character: &mut Character, f: F)

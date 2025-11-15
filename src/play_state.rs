@@ -1,6 +1,6 @@
 use crate::{
     data_model::{Action, ActionMovement, ActionOnSelf, ActionTargeted, CardData, Character},
-    play::{end_turn, play_card_unchecked},
+    play::{begin_turn, end_turn, play_card_unchecked},
     pop_ability::pop_ability_ignore_unsatisfied,
     resolve_action::{
         ActionInputMovement, ActionInputOnSelf, ActionInputTargeted, resolve_action_movement,
@@ -109,7 +109,11 @@ pub fn step_play_state(
                                 PendingInput::Some(PlayCardOrEndTurn::EndTurn) => {
                                     end_turn(active_character);
                                     play_state.has_turn =
-                                        (play_state.has_turn + 1) % all_characters.len()
+                                        (play_state.has_turn + 1) % all_characters.len();
+                                    //TODO: End of turn triggers will have weird ordering with the beginning of turn effects in the current implementation.
+                                    begin_turn(
+                                        all_characters.get_mut(play_state.has_turn).unwrap(),
+                                    );
                                 }
                                 PendingInput::Pending => {}
                             }

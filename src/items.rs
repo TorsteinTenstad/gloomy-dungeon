@@ -2,12 +2,23 @@ use crate::{
     character_filter::CharacterFilter,
     data_model::{
         Ability, Action, ActionOnSelf, ActionTargeted, AreaEffect, Comparison, Condition,
-        ConditionEffect, EffectOnCharacter, Item, ItemData, ModifyGainedConditions, Passives,
-        Reach, TriggeredAbilities,
+        ConditionEffect, EffectOnCharacter, ItemData, ModifyGainedConditions, Passives, Reach,
+        TriggeredAbilities,
     },
     precondition::Precondition,
     turn_stats::TurnStat,
 };
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub enum Item {
+    ShroudOfThePoisonFeeder, // Applied Poison is converted to Regen. Applied Regen is converted to Poison.
+    CloakOfInvisibility, // At the end of your turn, if you are not adjacent to an enemy, gain Invisible(1). After every attack action, gain Fragile(1).
+    ChestplateOfTheEnraged, // Every time damage is taken, gain Strong(1).
+    StillrootPlate, // At the start of you turn, if you didn't move last turn, gain one Stamina.
+    MonksRobe, // After every movement action, you may gain Disarmed(1) to apply Stunned(1) to an adjacent enemy.
+    ThorngrownVest, // At the end of your turn, if you didn't attack, gain Retaliate(2).
+    BoodboundHarness, // Your actions consume Health instead of Stamina.
+}
 
 impl Item {
     pub fn data(self) -> ItemData {
@@ -94,7 +105,7 @@ impl Item {
                 description: "At the start of you turn, if you didn't move last turn, gain one Stamina.".into(),
                 passives: Default::default(),
                 triggered_abilities: TriggeredAbilities {
-                    damage_taken: vec![Ability {
+                    beginning_of_turn: vec![Ability {
                         precondition: Some(Precondition::TurnStat {
                             turn_index_relative: 1,
                             stat: TurnStat::SpacesMoved,

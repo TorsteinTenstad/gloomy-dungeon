@@ -1,7 +1,8 @@
 #![cfg(test)]
 use crate::{
-    data_model::{Card, Character, Condition, Item},
+    data_model::{Card, Character, Condition},
     hex_grid::Pos,
+    items::Item,
     test::tools::{
         play_card_with_inputs, resolve_remaining_abilities, single_movement_input,
         single_targeted_input,
@@ -9,7 +10,7 @@ use crate::{
 };
 
 #[test]
-pub fn test_monks_robe() {
+pub fn test_item_monks_robe() {
     let pos_character = Pos::new(0, 0);
     let pos_other = Pos::new(0, 2);
     let pos_next_to_other = Pos::new(0, 1);

@@ -1,12 +1,13 @@
 #![cfg(test)]
 use crate::{
-    data_model::{Card, Character, Condition, Item},
+    data_model::{Card, Character, Condition},
     hex_grid::Pos,
+    items::Item,
     test::tools::{play_card_with_inputs, single_targeted_input},
 };
 
 #[test]
-pub fn test_shroud_of_the_poison_feeder() {
+pub fn test_item_shroud_of_the_poison_feeder() {
     let character = &mut Character {
         stamina_current: 10,
         health_current: 1,

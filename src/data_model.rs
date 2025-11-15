@@ -3,6 +3,7 @@ use crate::{
     character_filter::CharacterFilter,
     enum_map::EnumMap,
     hex_grid::{Area, Pos},
+    items::Item,
     precondition::Precondition,
     turn_stats::TurnStats,
 };
@@ -166,7 +167,7 @@ pub struct TriggeredAbilities {
     pub damage_taken: Vec<Ability>,
     pub attack_action: Vec<Ability>,
     pub movement_action: Vec<Ability>,
-    pub start_of_turn: Vec<Ability>,
+    pub beginning_of_turn: Vec<Ability>,
     pub end_of_turn: Vec<Ability>,
 }
 
@@ -244,15 +245,4 @@ pub enum Card {
     Fury,
     // Move, deal damage equal to move
     // Fortified acts like strength
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub enum Item {
-    ShroudOfThePoisonFeeder, // Applied Poison is converted to Regen. Applied Regen is converted to Poison.
-    CloakOfInvisibility, // At the end of your turn, if you are not adjacent to an enemy, gain Invisible(1). After every attack action, gain Fragile(1).
-    ChestplateOfTheEnraged, // Every time damage is taken, gain Strong(1).
-    StillrootPlate, // At the start of you turn, if you didn't move last turn, gain one Stamina.
-    MonksRobe, // After every movement action, you may gain Disarmed(1) to apply Stunned(1) to an adjacent enemy.
-    ThorngrownVest, // At the end of your turn, if you didn't attack, gain Retaliate(2).
-    BoodboundHarness, // Your actions consume Health instead of Stamina.
 }

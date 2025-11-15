@@ -20,3 +20,7 @@ pub fn end_turn(character: &mut Character) {
     character.conditions.decrement_all();
     push_triggered_abilities(character, |x| x.end_of_turn);
 }
+
+pub fn begin_turn(character: &mut Character) {
+    push_triggered_abilities(character, |x| x.beginning_of_turn);
+}
