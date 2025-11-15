@@ -1,6 +1,7 @@
 use crate::{
     character_filter::{CharacterFilter, filter_character},
-    data_model::{Character, Comparison, RoundStat},
+    data_model::{Character, Comparison},
+    turn_stats::TurnStat,
 };
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -10,9 +11,9 @@ pub enum Precondition {
         comparison: Comparison,
         value: usize,
     },
-    RoundStat {
-        round_index_relative: usize,
-        stat: RoundStat,
+    TurnStat {
+        turn_index_relative: usize,
+        stat: TurnStat,
         comparison: Comparison,
         value: usize,
     },
@@ -49,16 +50,14 @@ where
                 .count();
             comparison.compare(&count, value)
         }
-        Precondition::RoundStat {
-            round_index_relative,
+        Precondition::TurnStat {
+            turn_index_relative,
             stat,
             comparison,
             value,
-        } => source_character
-            .round_stats
-            .len()
-            .checked_sub(*round_index_relative)
-            .and_then(|round_index_absolute| source_character.round_stats.get(round_index_absolute))
-            .is_some_and(|round_stats| comparison.compare(&round_stats.get(stat), value)),
+        } => comparison.compare(
+            &source_character.turn_stats.get(*turn_index_relative, stat),
+            value,
+        ),
     }
 }

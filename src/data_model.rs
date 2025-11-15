@@ -4,6 +4,7 @@ use crate::{
     enum_map::EnumMap,
     hex_grid::{Area, Pos},
     precondition::Precondition,
+    turn_stats::TurnStats,
 };
 use std::borrow::Cow;
 
@@ -124,12 +125,6 @@ impl Comparison {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub enum RoundStat {
-    SpacesMoved,
-    AttackActions,
-}
-
 #[derive(Default, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum CharacterTeam {
     Player,
@@ -138,7 +133,6 @@ pub enum CharacterTeam {
 }
 
 type Conditions = EnumMap<Condition>;
-type RoundStats = EnumMap<RoundStat>;
 
 #[derive(Default, Debug, Clone, PartialEq, Eq)]
 pub struct Character {
@@ -150,7 +144,7 @@ pub struct Character {
     pub stamina_max: usize,
     pub equipped_items: Vec<Item>,
     pub conditions: Conditions,
-    pub round_stats: Vec<RoundStats>,
+    pub turn_stats: TurnStats,
     pub remaining_abilities: Vec<Ability>,
 }
 

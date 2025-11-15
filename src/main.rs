@@ -16,6 +16,7 @@ mod play_state;
 mod pop_ability;
 mod precondition;
 mod resolve_action;
+mod turn_stats;
 mod single_out;
 mod test;
 

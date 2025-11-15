@@ -3,9 +3,10 @@ use crate::{
     data_model::{
         Ability, Action, ActionOnSelf, ActionTargeted, AreaEffect, Comparison, Condition,
         ConditionEffect, EffectOnCharacter, Item, ItemData, ModifyGainedConditions, Passives,
-        Reach, RoundStat, TriggeredAbilities,
+        Reach, TriggeredAbilities,
     },
     precondition::Precondition,
+    turn_stats::TurnStat,
 };
 
 impl Item {
@@ -94,9 +95,9 @@ impl Item {
                 passives: Default::default(),
                 triggered_abilities: TriggeredAbilities {
                     damage_taken: vec![Ability {
-                        precondition: Some(Precondition::RoundStat {
-                            round_index_relative: 1,
-                            stat: RoundStat::SpacesMoved,
+                        precondition: Some(Precondition::TurnStat {
+                            turn_index_relative: 1,
+                            stat: TurnStat::SpacesMoved,
                             comparison: Comparison::Equal,
                             value: 0,
                         }),
@@ -156,9 +157,9 @@ impl Item {
                 passives: Default::default(),
                 triggered_abilities: TriggeredAbilities {
                     damage_taken: vec![Ability {
-                        precondition: Some(Precondition::RoundStat {
-                            round_index_relative: 0,
-                            stat: RoundStat::AttackActions,
+                        precondition: Some(Precondition::TurnStat {
+                            turn_index_relative: 0,
+                            stat: TurnStat::AttackActions,
                             comparison: Comparison::Equal,
                             value: 0,
                         }),

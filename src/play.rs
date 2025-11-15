@@ -3,7 +3,7 @@ use crate::{
     data_model::{CardData, Character, Condition},
 };
 
-pub fn play_card_unchecked(character: &mut Character, card_data: CardData) -> usize{
+pub fn play_card_unchecked(character: &mut Character, card_data: CardData) -> usize {
     debug_assert!(character.stamina_current >= card_data.stamina_cost);
     character.stamina_current =
         usize::saturating_sub(character.stamina_current, card_data.stamina_cost);
@@ -16,6 +16,7 @@ pub fn play_card_unchecked(character: &mut Character, card_data: CardData) -> us
 pub fn end_turn(character: &mut Character) {
     deal_damage(character.conditions.get(&Condition::Poison), character);
     restore_health(character.conditions.get(&Condition::Regen), character);
+    character.turn_stats.end_turn();
     character.conditions.decrement_all();
     push_triggered_abilities(character, |x| x.end_of_turn);
 }
