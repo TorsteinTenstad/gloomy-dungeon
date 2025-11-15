@@ -5,6 +5,7 @@ use crate::{
         ConditionEffect, EffectOnCharacter, ItemData, ModifyGainedConditions, Passives, Reach,
         TriggeredAbilities,
     },
+    hex_grid::DistanceRange,
     precondition::Precondition,
     turn_stats::TurnStat,
 };
@@ -51,8 +52,8 @@ impl Item {
                     end_of_turn: vec![Ability {
                         precondition: Some(Precondition::FilteredCount {
                             filter: CharacterFilter::And(vec![
-                                CharacterFilter::IsSelf,
-                                CharacterFilter::NoAdjacentEnemies,
+                                CharacterFilter::IsEnemy,
+                                CharacterFilter::WithinDistance(DistanceRange{from: 1, to: 2}),
                             ]),
                             comparison: Comparison::Equal,
                             value: 0,

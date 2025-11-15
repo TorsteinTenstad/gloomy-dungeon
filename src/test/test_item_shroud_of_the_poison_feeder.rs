@@ -1,6 +1,7 @@
 #![cfg(test)]
 use crate::{
-    data_model::{Card, Character, Condition},
+    cards::Card,
+    data_model::{Character, Condition},
     hex_grid::Pos,
     items::Item,
     test::tools::{play_card_with_inputs, single_targeted_input},

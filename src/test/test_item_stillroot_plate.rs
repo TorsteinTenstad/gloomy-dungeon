@@ -2,14 +2,14 @@
 use std::iter;
 
 use crate::{
-    data_model::{Card, Character},
+    cards::Card,
+    data_model::Character,
     hex_grid::Pos,
     items::Item,
     test::tools::{
         end_and_begin_turn, play_card_with_inputs, resolve_remaining_abilities,
         single_movement_input,
     },
-    turn_stats::TurnStat,
 };
 
 #[test]

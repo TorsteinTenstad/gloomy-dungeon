@@ -68,6 +68,7 @@ pub fn apply_effect_to_character(
 ) {
     match effect {
         EffectOnCharacter::Damage(damage) => {
+            push_triggered_abilities(source_character, |x| x.attack_action);
             let net_damage = net_damage(*damage, character, source_character);
             deal_damage(net_damage, character);
             deal_damage(
@@ -76,6 +77,7 @@ pub fn apply_effect_to_character(
             );
         }
         EffectOnCharacter::DamageWithLifesteal(damage) => {
+            push_triggered_abilities(source_character, |x| x.attack_action);
             let net_damage = net_damage(*damage, character, source_character);
             deal_damage(net_damage, character);
             deal_damage(

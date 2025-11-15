@@ -3,12 +3,37 @@
 use crate::{
     character_filter::CharacterFilter,
     data_model::{
-        Ability, Action, ActionMovement, ActionOnSelf, ActionTargeted, AreaEffect, Card, CardData,
+        Ability, Action, ActionMovement, ActionOnSelf, ActionTargeted, AreaEffect, CardData,
         Comparison, Condition, ConditionEffect, EffectOnCharacter, Reach,
     },
-    hex_grid::{Area, Disk},
+    hex_grid::{Area, DistanceRange},
     precondition::Precondition,
 };
+
+#[derive(Debug)]
+pub enum Card {
+    Step,
+    Dash,
+    Sprint,
+    Cut,
+    Strike,
+    LargeStrike,
+    SteadyShot,
+    RainOfArrows,
+    DrainLife,
+    PoisonCloud,
+    Preparation,
+    ShadowStep,
+    Backstab,
+    Whirlwind,
+    Sting,
+    Brawl,
+    Calm,
+    Adrenaline,
+    Fury,
+    // Move, deal damage equal to move
+    // Fortified acts like strength
+}
 
 impl Card {
     pub fn data(self) -> CardData {
@@ -29,9 +54,9 @@ impl Card {
                         reach: Reach::Ranged { range: 3 },
                         effects: vec![AreaEffect {
                             effects: vec![EffectOnCharacter::Damage(2)],
-                            area: Area::Disk(Disk {
-                                inner_radius: 0,
-                                outer_radius: 2,
+                            area: Area::Disk(DistanceRange {
+                                from: 0,
+                                to: 2,
                             }),
                             ..Default::default()
                         }],
@@ -61,9 +86,9 @@ impl Card {
                         reach: Reach::Ranged { range: 1 },
                         effects: vec![
                             AreaEffect {
-                                area: Area::Disk(Disk {
-                                    inner_radius: 0,
-                                    outer_radius: 1,
+                                area: Area::Disk(DistanceRange {
+                                    from: 0,
+                                    to: 1,
                                 }),
                                 effects: vec![EffectOnCharacter::Condition(ConditionEffect {
                                     condition_type: Condition::Poison,
@@ -72,9 +97,9 @@ impl Card {
                                 ..Default::default()
                             },
                             AreaEffect {
-                                area: Area::Disk(Disk {
-                                    inner_radius: 1,
-                                    outer_radius: 2,
+                                area: Area::Disk(DistanceRange {
+                                    from: 1,
+                                    to: 2,
                                 }),
                                 effects: vec![EffectOnCharacter::Condition(ConditionEffect {
                                     condition_type: Condition::Poison,
@@ -83,9 +108,9 @@ impl Card {
                                 ..Default::default()
                             },
                             AreaEffect {
-                                area: Area::Disk(Disk {
-                                    inner_radius: 2,
-                                    outer_radius: 3,
+                                area: Area::Disk(DistanceRange {
+                                    from: 2,
+                                    to: 3,
                                 }),
                                 effects: vec![EffectOnCharacter::Condition(ConditionEffect {
                                     condition_type: Condition::Poison,
@@ -182,9 +207,9 @@ impl Card {
                     precondition: None,
                     actions: vec![Action::OnSelf(ActionOnSelf {
                         effects: vec![AreaEffect {
-                            area: Area::Disk(Disk {
-                                inner_radius: 0,
-                                outer_radius: usize::MAX,
+                            area: Area::Disk(DistanceRange {
+                                from: 0,
+                                to: usize::MAX,
                             }),
                             effects: vec![EffectOnCharacter::Damage(1)],
                             ..Default::default()
@@ -199,9 +224,9 @@ impl Card {
                     precondition: None,
                     actions: vec![Action::OnSelf(ActionOnSelf {
                         effects: vec![AreaEffect {
-                            area: Area::Disk(Disk {
-                                inner_radius: 0,
-                                outer_radius: usize::MAX,
+                            area: Area::Disk(DistanceRange {
+                                from: 0,
+                                to: usize::MAX,
                             }),
                             filter: Some(CharacterFilter::WithCondition(Condition::Stunned)),
                             effects: vec![EffectOnCharacter::Damage(5)],
@@ -217,9 +242,9 @@ impl Card {
                         precondition: None,
                         actions: vec![Action::OnSelf(ActionOnSelf {
                             effects: vec![AreaEffect {
-                                area: Area::Disk(Disk {
-                                    inner_radius: 2,
-                                    outer_radius: 3,
+                                area: Area::Disk(DistanceRange {
+                                    from: 2,
+                                    to: 3,
                                 }),
                                 effects: vec![/*EffectOnCharacter::Pull(1)*/],
                                 ..Default::default()
@@ -230,9 +255,9 @@ impl Card {
                         precondition: None,
                         actions: vec![Action::OnSelf(ActionOnSelf {
                             effects: vec![AreaEffect {
-                                area: Area::Disk(Disk {
-                                    inner_radius: 1,
-                                    outer_radius: 2,
+                                area: Area::Disk(DistanceRange {
+                                    from: 1,
+                                    to: 2,
                                 }),
                                 effects: vec![EffectOnCharacter::Condition(ConditionEffect {
                                     condition_type: Condition::Weak,

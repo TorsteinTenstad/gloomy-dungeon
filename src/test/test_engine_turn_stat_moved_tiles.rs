@@ -1,6 +1,7 @@
 #![cfg(test)]
 use crate::{
-    data_model::{Card, Character},
+    cards::Card,
+    data_model::Character,
     hex_grid::Pos,
     play::end_turn,
     test::tools::{play_card_with_inputs, single_movement_input},

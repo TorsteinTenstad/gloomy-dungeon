@@ -1,6 +1,6 @@
 use crate::{
     data_model::{Action, ActionOnSelf, ActionTargeted, AreaEffect, Character, Condition, Reach},
-    hex_grid::{Area, Disk},
+    hex_grid::{Area, DistanceRange},
     precondition::optional_precondition_is_met,
 };
 
@@ -26,7 +26,7 @@ where
     }
 }
 
-pub fn pop_ability<'a, C>(source_character: &mut Character, characters: C) -> PopAbilityResult
+pub fn pop_ability<'a, C>(source_character: &'a mut Character, characters: C) -> PopAbilityResult
 where
     C: IntoIterator<Item = &'a Character>,
 {
@@ -86,10 +86,7 @@ pub fn filter_map_action_for_fury(action: &Action) -> Option<Action> {
                 effects: effects
                     .iter()
                     .map(|effect| AreaEffect {
-                        area: Area::Disk(Disk {
-                            inner_radius: 1,
-                            outer_radius: 2,
-                        }),
+                        area: Area::Disk(DistanceRange { from: 1, to: 2 }),
                         filter: effect.filter.clone(),
                         effects: effect.effects.clone(),
                     })

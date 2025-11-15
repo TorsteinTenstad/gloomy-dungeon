@@ -1,7 +1,8 @@
 #![cfg(test)]
 
 use crate::{
-    data_model::{Ability, Action, Card, Character},
+    cards::Card,
+    data_model::{Ability, Action, Character},
     hex_grid::Pos,
     play::{begin_turn, end_turn, play_card_unchecked},
     pop_ability::{PopAbilityResult, pop_ability},
@@ -154,7 +155,7 @@ where
     resolve_abilities(character, characters, inputs, abilities_to_resolve)
 }
 
-pub fn end_and_begin_turn(character: &mut Character){
+pub fn end_and_begin_turn(character: &mut Character) {
     end_turn(character);
     begin_turn(character);
 }

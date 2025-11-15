@@ -1,3 +1,5 @@
+use std::iter;
+
 use crate::{
     character_filter::{CharacterFilter, filter_character},
     data_model::{Character, Comparison},
@@ -22,7 +24,7 @@ pub enum Precondition {
 pub fn optional_precondition_is_met<'a, C>(
     precondition: Option<&Precondition>,
     characters: C,
-    source_character: &Character,
+    source_character: &'a Character,
 ) -> bool
 where
     C: IntoIterator<Item = &'a Character>,
@@ -33,7 +35,7 @@ where
 pub fn precondition_is_met<'a, C>(
     precondition: &Precondition,
     characters: C,
-    source_character: &Character,
+    source_character: &'a Character,
 ) -> bool
 where
     C: IntoIterator<Item = &'a Character>,
@@ -46,6 +48,7 @@ where
         } => {
             let count = characters
                 .into_iter()
+                .chain(iter::once(source_character))
                 .filter(|character| filter_character(character, filter, source_character))
                 .count();
             comparison.compare(&count, value)

@@ -2,9 +2,7 @@
 use std::iter;
 
 use crate::{
-    data_model::{Card, Character},
-    hex_grid::Pos,
-    test::tools::play_card_with_inputs,
+    cards::Card, data_model::Character, hex_grid::Pos, test::tools::play_card_with_inputs,
 };
 
 #[test]
