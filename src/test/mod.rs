@@ -1,4 +1,5 @@
 mod test_engine_turn_stat_moved_tiles;
+mod test_item_chestplate_of_the_enraged;
 mod test_item_cloak_of_invisibility;
 mod test_item_monks_robe;
 mod test_item_shroud_of_the_poison_feeder;

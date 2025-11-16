@@ -17,10 +17,10 @@ pub fn end_turn(character: &mut Character) {
     deal_damage(character.conditions.get(&Condition::Poison), character);
     restore_health(character.conditions.get(&Condition::Regen), character);
     character.turn_stats.end_turn();
-    character.conditions.decrement_all();
     push_triggered_abilities(character, |x| x.end_of_turn);
 }
 
 pub fn begin_turn(character: &mut Character) {
+    character.conditions.decrement_all();
     push_triggered_abilities(character, |x| x.beginning_of_turn);
 }
