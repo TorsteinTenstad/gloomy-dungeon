@@ -1,13 +1,13 @@
 use crate::{
     apply_area_effects::push_triggered_abilities,
     data_model::Character,
-    hex_grid::{Pos, distance},
+    hex_grid::{PosAxial, distance},
     turn_stats::TurnStat,
 };
 
 pub fn perform_movement_unchecked<'a, P>(character: &mut Character, path: P)
 where
-    P: Iterator<Item = &'a Pos>,
+    P: Iterator<Item = &'a PosAxial>,
 {
     // TODO: Check path is clear enough
     for pos in path {

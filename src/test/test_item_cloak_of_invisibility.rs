@@ -4,7 +4,7 @@ use std::iter;
 use crate::{
     cards::Card,
     data_model::{Character, CharacterTeam, Condition},
-    hex_grid::Pos,
+    hex_grid::PosAxial,
     items::Item,
     test::tools::{
         end_and_begin_turn, play_card_with_inputs, resolve_remaining_abilities,
@@ -15,7 +15,7 @@ use crate::{
 #[test]
 pub fn test_item_cloak_of_invisibility() {
     let without_item_alone = &mut Character {
-        pos: Pos::new(-2, 0),
+        pos: PosAxial::new(-2, 0),
         team: CharacterTeam::Player,
         stamina_current: 10,
         equipped_items: vec![],
@@ -23,7 +23,7 @@ pub fn test_item_cloak_of_invisibility() {
     };
 
     let with_item_alone = &mut Character {
-        pos: Pos::new(-4, 0),
+        pos: PosAxial::new(-4, 0),
         team: CharacterTeam::Player,
         stamina_current: 10,
         equipped_items: vec![Item::CloakOfInvisibility],
@@ -31,14 +31,14 @@ pub fn test_item_cloak_of_invisibility() {
     };
 
     let with_item_not_alone = &mut Character {
-        pos: Pos::new(0, 0),
+        pos: PosAxial::new(0, 0),
         team: CharacterTeam::Player,
         stamina_current: 10,
         equipped_items: vec![Item::CloakOfInvisibility],
         ..Default::default()
     };
 
-    let enemy_pos = Pos::new(1, 0);
+    let enemy_pos = PosAxial::new(1, 0);
     let enemy = &mut [Character {
         team: CharacterTeam::Monster,
         pos: enemy_pos.clone(),

@@ -2,7 +2,7 @@
 use crate::{
     character_filter::CharacterFilter,
     enum_map::EnumMap,
-    hex_grid::{Area, Pos},
+    hex_grid::{Area, PosAxial},
     items::Item,
     precondition::Precondition,
     turn_stats::TurnStats,
@@ -137,7 +137,7 @@ type Conditions = EnumMap<Condition>;
 
 #[derive(Default, Debug, Clone, PartialEq, Eq)]
 pub struct Character {
-    pub pos: Pos,
+    pub pos: PosAxial,
     pub team: CharacterTeam,
     pub health_current: usize,
     pub health_max: usize,

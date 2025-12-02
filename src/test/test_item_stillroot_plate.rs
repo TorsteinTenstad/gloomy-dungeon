@@ -4,7 +4,7 @@ use std::iter;
 use crate::{
     cards::Card,
     data_model::Character,
-    hex_grid::Pos,
+    hex_grid::PosAxial,
     items::Item,
     test::tools::{
         end_and_begin_turn, play_card_with_inputs, resolve_remaining_abilities,
@@ -17,14 +17,14 @@ pub fn test_item_stillroot_plate() {
     let character_with_item_moving = &mut Character {
         stamina_current: 10,
         stamina_max: 20,
-        equipped_items: vec![Item::StillrootPlate],
+        equipped_items: vec![Item::StillrootLegs],
         ..Default::default()
     };
 
     let character_with_item_still = &mut Character {
         stamina_current: 10,
         stamina_max: 20,
-        equipped_items: vec![Item::StillrootPlate],
+        equipped_items: vec![Item::StillrootLegs],
         ..Default::default()
     };
 
@@ -39,7 +39,7 @@ pub fn test_item_stillroot_plate() {
         Card::Step,
         character_with_item_moving,
         &mut vec![],
-        single_movement_input(vec![Pos::new(0, 1)]).iter(),
+        single_movement_input(vec![PosAxial::new(0, 1)]).iter(),
     )
     .unwrap();
 

@@ -2,7 +2,7 @@
 use std::iter;
 
 use crate::{
-    cards::Card, data_model::Character, hex_grid::Pos, test::tools::play_card_with_inputs,
+    cards::Card, data_model::Character, hex_grid::PosAxial, test::tools::play_card_with_inputs,
 };
 
 #[test]
@@ -28,7 +28,7 @@ pub fn test_fury() {
     ]
     .iter()
     .map(|(r, q)| Character {
-        pos: Pos::new(*r, *q),
+        pos: PosAxial::new(*r, *q),
         health_current: STARTING_HP,
         ..Default::default()
     })

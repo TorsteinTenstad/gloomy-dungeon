@@ -3,7 +3,7 @@
 use crate::{
     cards::Card,
     data_model::{Ability, Action, Character},
-    hex_grid::Pos,
+    hex_grid::PosAxial,
     play::{begin_turn, end_turn, play_card_unchecked},
     pop_ability::{PopAbilityResult, pop_ability},
     resolve_action::{
@@ -19,11 +19,11 @@ pub enum ActionInput {
     Movement(ActionInputMovement),
 }
 
-pub fn single_targeted_input(target: Pos) -> Vec<ActionInput> {
+pub fn single_targeted_input(target: PosAxial) -> Vec<ActionInput> {
     vec![ActionInput::Targeted(ActionInputTargeted { target })]
 }
 
-pub fn single_movement_input(path: Vec<Pos>) -> Vec<ActionInput> {
+pub fn single_movement_input(path: Vec<PosAxial>) -> Vec<ActionInput> {
     vec![ActionInput::Movement(ActionInputMovement { path })]
 }
 

@@ -2,7 +2,7 @@
 use crate::{
     cards::Card,
     data_model::{Character, Condition},
-    hex_grid::Pos,
+    hex_grid::PosAxial,
     items::Item,
     test::tools::{play_card_with_inputs, single_targeted_input},
 };
@@ -20,7 +20,7 @@ pub fn test_item_shroud_of_the_poison_feeder() {
         Card::PoisonCloud,
         character,
         &mut vec![],
-        single_targeted_input(Pos::default()).iter(),
+        single_targeted_input(PosAxial::default()).iter(),
     )
     .unwrap();
 

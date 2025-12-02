@@ -10,15 +10,24 @@ use crate::{
     turn_stats::TurnStat,
 };
 
+#[allow(dead_code)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum Item {
     ShroudOfThePoisonFeeder, // Applied Poison is converted to Regen. Applied Regen is converted to Poison.
     CloakOfInvisibility, // At the end of your turn, if you are not adjacent to an enemy, gain Invisible(1). After every attack action, gain Fragile(1).
     ChestplateOfTheEnraged, // Every time damage is taken, gain Strong(1).
-    StillrootPlate, // At the start of you turn, if you didn't move last turn, gain one Stamina.
     MonksRobe, // After every movement action, you may gain Disarmed(1) to apply Stunned(1) to an adjacent enemy.
     ThorngrownVest, // At the end of your turn, if you didn't attack, gain Retaliate(2).
     BoodboundHarness, // Your actions consume Health instead of Stamina.
+    // VestOfRecklessness, // At the start of you turn, if you are below 30% health, gain Fortified(2)
+    // HolyRobe, // At the end of you turn, if you are at full health, ?
+
+    // BootsOfSpeed, // At the start of your turn, gain Speed(1)
+    // HeavyGreaves, // At the start of your turn, gain Fortified(1) and Slow(1)
+    // HolySandals, // After every movement action, restore 1 health
+    // SpringyShoes, // All your movement actions have Jump
+    // SpikedBoots, // After every movement action, deal 1 damage to an adjacent enemy
+    StillrootLegs, // At the start of you turn, if you didn't move last turn, gain one Stamina.
 }
 
 impl Item {
@@ -102,7 +111,7 @@ impl Item {
                     ..Default::default()
                 },
             },
-            Self::StillrootPlate => ItemData {
+            Self::StillrootLegs => ItemData {
                 description: "At the start of you turn, if you didn't move last turn, gain one Stamina.".into(),
                 passives: Default::default(),
                 triggered_abilities: TriggeredAbilities {

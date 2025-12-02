@@ -2,7 +2,7 @@
 use crate::{
     cards::Card,
     data_model::{Character, Condition},
-    hex_grid::Pos,
+    hex_grid::PosAxial,
     items::Item,
     test::tools::{
         play_card_with_inputs, resolve_remaining_abilities, single_movement_input,
@@ -12,9 +12,9 @@ use crate::{
 
 #[test]
 pub fn test_item_monks_robe() {
-    let pos_character = Pos::new(0, 0);
-    let pos_other = Pos::new(0, 2);
-    let pos_next_to_other = Pos::new(0, 1);
+    let pos_character = PosAxial::new(0, 0);
+    let pos_other = PosAxial::new(0, 2);
+    let pos_next_to_other = PosAxial::new(0, 1);
 
     let character = &mut Character {
         stamina_current: 10,

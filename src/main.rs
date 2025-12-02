@@ -1,6 +1,10 @@
+use clap::Parser;
+
 use crate::{
-    data_model::{ActionMovement, ActionOnSelf, ActionTargeted},
-    play_state::{Cancelable, Input, PendingInput, PlayCardOrEndTurn, PlayState, step_play_state},
+    data_model::{ActionMovement, ActionOnSelf, ActionTargeted, Character},
+    hex_grid::PosOddQHex,
+    play_state::{Cancelable, Input, PendingInput, PlayCardOrEndTurn},
+    render_hex_grid::HexContent,
     resolve_action::{ActionInputMovement, ActionInputOnSelf, ActionInputTargeted},
 };
 mod apply_area_effects;
@@ -15,17 +19,77 @@ mod play;
 mod play_state;
 mod pop_ability;
 mod precondition;
+mod render_hex_grid;
 mod resolve_action;
-mod turn_stats;
 mod single_out;
 mod test;
+mod turn_stats;
 
-fn main() {
-    let mut all_characters = vec![];
-    let mut input = InputDummy {};
-    let mut play_state = PlayState::default();
+const COMMAND_NAME: &str = "";
+
+#[derive(clap_derive::Parser, Debug)]
+#[command(name = COMMAND_NAME)]
+struct Cli {
+    #[command(subcommand)]
+    command: Command,
+}
+
+#[derive(clap_derive::Subcommand, Debug)]
+enum Command {
+    AddCharacter { r: isize, q: isize },
+}
+
+struct DisplayCharacters<'a> {
+    characters: &'a [Character],
+}
+
+impl HexContent for &DisplayCharacters<'_> {
+    fn hex_content(&self, pos: &PosOddQHex, content_row: isize) -> String {
+        let character = self
+            .characters
+            .iter()
+            .find(|character| character.pos == pos.to_axial());
+        match (content_row, character) {
+            (2, _) => format!("{} {}      ", pos.r, pos.q),
+            (0, Some(character)) => {
+                format!("{}/{}", character.health_current, character.health_max)
+            }
+            (-1, Some(_character)) => "C".into(),
+            _ => Default::default(),
+        }
+    }
+}
+
+fn main() -> Result<(), std::io::Error> {
+    let mut characters = Vec::<Character>::new();
     loop {
-        step_play_state(&mut play_state, &mut input, &mut all_characters);
+        println!(
+            "{}",
+            render_hex_grid::render_hex_grid(
+                &DisplayCharacters {
+                    characters: &characters
+                },
+                0..4,
+                0..4,
+                9,
+                3
+            )
+        );
+        let mut line = String::new();
+        std::io::stdin().read_line(&mut line)?;
+        match Cli::try_parse_from(std::iter::once(COMMAND_NAME).chain(line.split_whitespace())) {
+            Ok(cli) => match cli.command {
+                Command::AddCharacter { r, q } => {
+                    characters.push(Character {
+                        pos: PosOddQHex { r, q }.to_axial(),
+                        ..Default::default()
+                    });
+                }
+            },
+            Err(err) => {
+                println!("{}", err)
+            }
+        }
     }
 }
 

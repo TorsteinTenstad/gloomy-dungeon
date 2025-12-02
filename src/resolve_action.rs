@@ -1,7 +1,7 @@
 use crate::{
     apply_area_effects::apply_area_effects,
     data_model::{ActionMovement, ActionOnSelf, ActionTargeted, Character},
-    hex_grid::Pos,
+    hex_grid::PosAxial,
     movement::perform_movement_unchecked,
 };
 
@@ -10,12 +10,12 @@ pub struct ActionInputOnSelf {}
 
 #[derive(Debug, Clone)]
 pub struct ActionInputTargeted {
-    pub target: Pos,
+    pub target: PosAxial,
 }
 
 #[derive(Debug, Clone)]
 pub struct ActionInputMovement {
-    pub path: Vec<Pos>,
+    pub path: Vec<PosAxial>,
 }
 
 pub fn resolve_action_movement(

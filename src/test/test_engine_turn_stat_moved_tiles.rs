@@ -2,7 +2,7 @@
 use crate::{
     cards::Card,
     data_model::Character,
-    hex_grid::Pos,
+    hex_grid::PosAxial,
     play::end_turn,
     test::tools::{play_card_with_inputs, single_movement_input},
     turn_stats::TurnStat,
@@ -31,7 +31,7 @@ pub fn test_engine_turn_stat_moved_tiles() {
         Card::Step,
         character,
         &mut vec![],
-        single_movement_input(vec![Pos::new(0, 1), Pos::new(1, 0)]).iter(),
+        single_movement_input(vec![PosAxial::new(0, 1), PosAxial::new(1, 0)]).iter(),
     )
     .unwrap();
 

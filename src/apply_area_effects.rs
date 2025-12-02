@@ -5,12 +5,12 @@ use crate::{
         Ability, AreaEffect, Character, Condition, ConditionEffect, EffectOnCharacter,
         ModifyGainedConditions, TriggeredAbilities,
     },
-    hex_grid::{Pos, pos_in_area},
+    hex_grid::{PosAxial, pos_in_area},
 };
 
 pub fn apply_area_effects<'b, C, E>(
     effects: E,
-    target: &Pos,
+    target: &PosAxial,
     characters: &mut C,
     source_character: &mut Character,
 ) where
@@ -29,7 +29,7 @@ pub fn apply_area_effects<'b, C, E>(
 
 pub fn apply_area_effect<'a, 'b, C>(
     area_effect: &AreaEffect,
-    target: &Pos,
+    target: &PosAxial,
     source_character: &mut Character,
     other_characters: C,
 ) where
@@ -265,7 +265,7 @@ mod tests {
                 })],
                 ..Default::default()
             },
-            &Pos::default(),
+            &PosAxial::default(),
             &mut character,
             iter::empty(),
         );
