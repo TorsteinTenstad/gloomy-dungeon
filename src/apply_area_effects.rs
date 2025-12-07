@@ -6,6 +6,7 @@ use crate::{
         ModifyGainedConditions, TriggeredAbilities,
     },
     hex_grid::{PosAxial, pos_in_area},
+    turn_stats::TurnStat,
 };
 
 pub fn apply_area_effects<'b, C, E>(
@@ -71,6 +72,9 @@ pub fn apply_effect_to_character(
             push_triggered_abilities(source_character, |x| x.attack_action);
             let net_damage = net_damage(*damage, character, source_character);
             deal_damage(net_damage, character);
+            *source_character
+                .turn_stats
+                .get_current_mut(TurnStat::AttackActions) += 1;
             deal_damage(
                 character.conditions.get(&Condition::Retaliate),
                 source_character,
@@ -80,6 +84,9 @@ pub fn apply_effect_to_character(
             push_triggered_abilities(source_character, |x| x.attack_action);
             let net_damage = net_damage(*damage, character, source_character);
             deal_damage(net_damage, character);
+            *source_character
+                .turn_stats
+                .get_current_mut(TurnStat::AttackActions) += 1;
             deal_damage(
                 character.conditions.get(&Condition::Retaliate),
                 source_character,
@@ -107,11 +114,17 @@ pub fn apply_effect_to_character_with_same_source_character(
         EffectOnCharacter::Damage(damage) => {
             let net_damage = net_damage(*damage, character, character);
             deal_damage(net_damage, character);
+            *character
+                .turn_stats
+                .get_current_mut(TurnStat::AttackActions) += 1;
             deal_damage(character.conditions.get(&Condition::Retaliate), character);
         }
         EffectOnCharacter::DamageWithLifesteal(damage) => {
             let net_damage = net_damage(*damage, character, character);
             deal_damage(net_damage, character);
+            *character
+                .turn_stats
+                .get_current_mut(TurnStat::AttackActions) += 1;
             deal_damage(character.conditions.get(&Condition::Retaliate), character);
             restore_health(net_damage, character);
         }

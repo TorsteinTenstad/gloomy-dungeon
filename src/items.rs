@@ -177,9 +177,9 @@ impl Item {
                 description: "At the end of your turn, if you didn't attack, gain Retaliate(2).".into(),
                 passives: Default::default(),
                 triggered_abilities: TriggeredAbilities {
-                    damage_taken: vec![Ability {
+                    end_of_turn: vec![Ability {
                         precondition: Some(Precondition::TurnStat {
-                            turn_index_relative: 0,
+                            turn_index_relative: 1, // The engine processes turn stats before end of turn abilities, so we refer to last round
                             stat: TurnStat::AttackActions,
                             comparison: Comparison::Equal,
                             value: 0,
