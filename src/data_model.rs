@@ -133,7 +133,7 @@ pub enum CharacterTeam {
     Monster,
 }
 
-type Conditions = EnumMap<Condition>;
+pub type Conditions = EnumMap<Condition>;
 
 #[derive(Default, Debug, Clone, PartialEq, Eq)]
 pub struct Character {

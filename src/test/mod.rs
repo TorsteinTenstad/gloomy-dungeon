@@ -1,3 +1,5 @@
+mod test_card_preparation;
+mod test_card_rain_of_arrows;
 mod test_engine_turn_stat_attack_actions;
 mod test_engine_turn_stat_moved_tiles;
 mod test_item_chestplate_of_the_enraged;

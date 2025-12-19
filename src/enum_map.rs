@@ -5,6 +5,11 @@ use std::hash::Hash;
 pub struct EnumMap<K: Eq + Hash>(HashMap<K, usize>);
 
 impl<K: Eq + Hash> EnumMap<K> {
+    pub fn with_incremented(self, key: K, increment: isize) -> Self {
+        let mut this = self;
+        this.increment(key, increment);
+        this
+    }
     pub fn get(&self, key: &K) -> usize {
         *self.0.get(key).unwrap_or(&0)
     }
